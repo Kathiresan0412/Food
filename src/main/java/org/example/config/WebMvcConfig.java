@@ -1,0 +1,19 @@
+package org.example.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+    
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("index");
+        registry.addViewController("/login").setViewName("login");
+        registry.addViewController("/dashboard").setViewName("dashboard");
+        registry.addViewController("/register").setViewName("register");
+        registry.addViewController("/register/shop").setViewName("register-shop");
+        registry.addViewController("/register/customer").setViewName("register-customer");
+    }
+}

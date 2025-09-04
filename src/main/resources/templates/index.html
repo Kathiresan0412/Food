@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Ordering System - Home</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-utensils me-2"></i>FoodOrder
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">Home</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register">
+                            <i class="fas fa-user-plus me-1"></i>Register
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section bg-gradient-primary text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Order Food Online</h1>
+                    <p class="lead mb-4">Discover amazing restaurants and order your favorite food with just a few clicks. Fast delivery, great prices, and delicious meals await you!</p>
+                    <div class="d-flex gap-3">
+                        <a href="/register/customer" class="btn btn-light btn-lg">
+                            <i class="fas fa-shopping-cart me-2"></i>Order Now
+                        </a>
+                        <a href="/register/shop" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-store me-2"></i>Join as Restaurant
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="text-center">
+                        <i class="fas fa-utensils display-1 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-12">
+                    <h2 class="display-5 fw-bold">Why Choose FoodOrder?</h2>
+                    <p class="lead text-muted">We make food ordering simple, fast, and reliable</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-primary text-white rounded-circle mx-auto mb-3">
+                                <i class="fas fa-bolt fa-2x"></i>
+                            </div>
+                            <h5 class="card-title">Fast Delivery</h5>
+                            <p class="card-text text-muted">Get your food delivered quickly with our efficient delivery system.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-success text-white rounded-circle mx-auto mb-3">
+                                <i class="fas fa-shield-alt fa-2x"></i>
+                            </div>
+                            <h5 class="card-title">Secure Payment</h5>
+                            <p class="card-text text-muted">Pay safely with our secure payment system and multiple payment options.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-warning text-white rounded-circle mx-auto mb-3">
+                                <i class="fas fa-star fa-2x"></i>
+                            </div>
+                            <h5 class="card-title">Quality Food</h5>
+                            <p class="card-text text-muted">Enjoy high-quality food from verified restaurants and food vendors.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Types Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row text-center mb-5">
+                <div class="col-12">
+                    <h2 class="display-5 fw-bold">Join Our Platform</h2>
+                    <p class="lead text-muted">Choose your role and start your journey with us</p>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow">
+                        <div class="card-body text-center p-5">
+                            <div class="user-type-icon bg-primary text-white rounded-circle mx-auto mb-4">
+                                <i class="fas fa-user fa-3x"></i>
+                            </div>
+                            <h4 class="card-title">Customer</h4>
+                            <p class="card-text text-muted mb-4">Browse restaurants, order food, and enjoy fast delivery to your doorstep.</p>
+                            <a href="/register/customer" class="btn btn-primary btn-lg">
+                                <i class="fas fa-user-plus me-2"></i>Register as Customer
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow">
+                        <div class="card-body text-center p-5">
+                            <div class="user-type-icon bg-success text-white rounded-circle mx-auto mb-4">
+                                <i class="fas fa-store fa-3x"></i>
+                            </div>
+                            <h4 class="card-title">Restaurant Owner</h4>
+                            <p class="card-text text-muted mb-4">Manage your restaurant, add menu items, and reach more customers.</p>
+                            <a href="/register/shop" class="btn btn-success btn-lg">
+                                <i class="fas fa-store me-2"></i>Register as Restaurant
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow">
+                        <div class="card-body text-center p-5">
+                            <div class="user-type-icon bg-warning text-white rounded-circle mx-auto mb-4">
+                                <i class="fas fa-cog fa-3x"></i>
+                            </div>
+                            <h4 class="card-title">Admin</h4>
+                            <p class="card-text text-muted mb-4">Manage the entire platform, approve restaurants, and monitor activities.</p>
+                            <a href="/login" class="btn btn-warning btn-lg">
+                                <i class="fas fa-sign-in-alt me-2"></i>Admin Login
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-utensils me-2"></i>FoodOrder</h5>
+                    <p>Your trusted food ordering platform connecting customers with the best restaurants.</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/" class="text-light">Home</a></li>
+                        <li><a href="/register/shop" class="text-light">Register as Shop</a></li>
+                        <li><a href="/register/customer" class="text-light">Register as Customer</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2024 FoodOrder System. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

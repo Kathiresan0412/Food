@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Food Ordering System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-utensils me-2"></i>FoodOrder Admin
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-1"></i>
+                        <span sec:authentication="name">Admin</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/logout">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#dashboard" data-section="dashboard">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#shops" data-section="shops">
+                                <i class="fas fa-store me-2"></i>Restaurants
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#customers" data-section="customers">
+                                <i class="fas fa-users me-2"></i>Customers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#orders" data-section="orders">
+                                <i class="fas fa-shopping-cart me-2"></i>Orders
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#activity-logs" data-section="activity-logs">
+                                <i class="fas fa-history me-2"></i>Activity Logs
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Admin Dashboard</h1>
+                </div>
+
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="content-section">
+                    <!-- Stats Cards -->
+                    <div class="row mb-4">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Users</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalUsers">-</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Restaurants</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalShops">-</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-store fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Customers</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalCustomers">-</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-user fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending Approvals</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="pendingShops">-</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clock fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Recent Activity</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="recentActivityTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Action</th>
+                                                    <th>Description</th>
+                                                    <th>User</th>
+                                                    <th>Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Activity logs will be loaded here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shops Section -->
+                <div id="shops-section" class="content-section" style="display: none;">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Restaurant Management</h1>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <button class="btn btn-sm btn-outline-secondary" onclick="loadShops()">
+                                <i class="fas fa-sync-alt me-1"></i>Refresh
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pending Approvals -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-warning">Pending Approvals</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="pendingShopsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Restaurant Name</th>
+                                            <th>Owner</th>
+                                            <th>Email</th>
+                                            <th>Address</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Pending shops will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- All Restaurants -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">All Restaurants</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="allShopsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Restaurant Name</th>
+                                            <th>Owner</th>
+                                            <th>Email</th>
+                                            <th>Status</th>
+                                            <th>Rating</th>
+                                            <th>Total Orders</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- All shops will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other sections will be similar... -->
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Hide all sections
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                
+                // Show selected section
+                const sectionId = this.getAttribute('data-section') + '-section';
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.style.display = 'block';
+                }
+                
+                // Load section data
+                loadSectionData(this.getAttribute('data-section'));
+            });
+        });
+
+        // Load dashboard stats
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch('/api/admin/dashboard/stats');
+                const stats = await response.json();
+                
+                document.getElementById('totalUsers').textContent = stats.totalUsers;
+                document.getElementById('totalShops').textContent = stats.totalShops;
+                document.getElementById('totalCustomers').textContent = stats.totalCustomers;
+                document.getElementById('pendingShops').textContent = stats.pendingShops;
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+
+        // Load section data
+        function loadSectionData(section) {
+            switch(section) {
+                case 'dashboard':
+                    loadDashboardStats();
+                    loadRecentActivity();
+                    break;
+                case 'shops':
+                    loadPendingShops();
+                    loadAllShops();
+                    break;
+                // Add other cases as needed
+            }
+        }
+
+        // Load recent activity
+        async function loadRecentActivity() {
+            try {
+                const response = await fetch('/api/admin/activity-logs');
+                const logs = await response.json();
+                
+                const tbody = document.querySelector('#recentActivityTable tbody');
+                tbody.innerHTML = '';
+                
+                logs.slice(0, 10).forEach(log => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${log.action}</td>
+                        <td>${log.description}</td>
+                        <td>${log.user ? log.user.name : 'System'}</td>
+                        <td>${new Date(log.createdAt).toLocaleString()}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading recent activity:', error);
+            }
+        }
+
+        // Load pending shops
+        async function loadPendingShops() {
+            try {
+                const response = await fetch('/api/admin/shops/pending');
+                const shops = await response.json();
+                
+                const tbody = document.querySelector('#pendingShopsTable tbody');
+                tbody.innerHTML = '';
+                
+                shops.forEach(shop => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${shop.shopName}</td>
+                        <td>${shop.name}</td>
+                        <td>${shop.email}</td>
+                        <td>${shop.address}</td>
+                        <td>
+                            <button class="btn btn-sm btn-success me-1" onclick="approveShop(${shop.id})">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="rejectShop(${shop.id})">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading pending shops:', error);
+            }
+        }
+
+        // Approve shop
+        async function approveShop(shopId) {
+            try {
+                const response = await fetch(`/api/admin/shops/${shopId}/approve`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    alert('Shop approved successfully!');
+                    loadPendingShops();
+                    loadAllShops();
+                } else {
+                    alert('Failed to approve shop');
+                }
+            } catch (error) {
+                console.error('Error approving shop:', error);
+                alert('Failed to approve shop');
+            }
+        }
+
+        // Reject shop
+        async function rejectShop(shopId) {
+            if (confirm('Are you sure you want to reject this shop?')) {
+                try {
+                    const response = await fetch(`/api/admin/shops/${shopId}/reject`, {
+                        method: 'POST'
+                    });
+                    
+                    if (response.ok) {
+                        alert('Shop rejected successfully!');
+                        loadPendingShops();
+                        loadAllShops();
+                    } else {
+                        alert('Failed to reject shop');
+                    }
+                } catch (error) {
+                    console.error('Error rejecting shop:', error);
+                    alert('Failed to reject shop');
+                }
+            }
+        }
+
+        // Load all shops
+        async function loadAllShops() {
+            try {
+                const response = await fetch('/api/admin/shops');
+                const shops = await response.json();
+                
+                const tbody = document.querySelector('#allShopsTable tbody');
+                tbody.innerHTML = '';
+                
+                shops.forEach(shop => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${shop.shopName}</td>
+                        <td>${shop.name}</td>
+                        <td>${shop.email}</td>
+                        <td>
+                            <span class="badge ${shop.isApproved ? 'bg-success' : 'bg-warning'}">
+                                ${shop.isApproved ? 'Approved' : 'Pending'}
+                            </span>
+                        </td>
+                        <td>${shop.rating || 0}</td>
+                        <td>${shop.totalOrders || 0}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary me-1" onclick="viewShop(${shop.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning" onclick="editShop(${shop.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading all shops:', error);
+            }
+        }
+
+        // Load dashboard on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardStats();
+            loadRecentActivity();
+        });
+    </script>
+</body>
+</html>
