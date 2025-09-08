@@ -47,13 +47,10 @@ spring:
 
 
   datasource:
-    # url: jdbc:mysql://interchange.proxy.rlwy.net:58715/railway?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    # username: root
-    # password: AnDPjCBkeFgthSpmGVCtHYBUAtUSwJbF
-    # driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/food_ordering_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: root
-    password: macos2024
+    # Use Railway env vars if present, otherwise fall back to local dev
+    url: jdbc:mysql://${MYSQLHOST:localhost}:${MYSQLPORT:3306}/${MYSQLDATABASE:food_ordering_db}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${MYSQLUSER:root}
+    password: ${MYSQLPASSWORD:macos2024}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
