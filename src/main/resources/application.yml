@@ -45,11 +45,12 @@ spring:
   application:
     name: food-ordering-system
 
+
   datasource:
-    url: ${JDBC_URL:jdbc:mysql://${MYSQLHOST:localhost}:${MYSQLPORT:3306}/${MYSQLDATABASE:food_ordering_db}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
-    username: ${MYSQLUSER:root}
-    password: ${MYSQLPASSWORD:macos2024}
-    driver-class-name: ${JDBC_DRIVER:com.mysql.cj.jdbc.Driver}
+    url: jdbc:mysql://interchange.proxy.rlwy.net:58715/railway?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: AnDPjCBkeFgthSpmGVCtHYBUAtUSwJbF
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
