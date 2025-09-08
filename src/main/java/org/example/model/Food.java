@@ -41,7 +41,7 @@ public class Food {
     private Integer preparationTime; // in minutes
     
     @Column(name = "rating")
-    private Double rating = 0.0;
+    private BigDecimal rating = BigDecimal.ZERO;
     
     @Column(name = "total_orders")
     private Integer totalOrders = 0;
@@ -142,11 +142,11 @@ public class Food {
         this.preparationTime = preparationTime;
     }
     
-    public Double getRating() {
+    public BigDecimal getRating() {
         return rating;
     }
     
-    public void setRating(Double rating) {
+    public void setRating(BigDecimal rating) {
         this.rating = rating;
     }
     

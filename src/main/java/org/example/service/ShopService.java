@@ -7,6 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -108,9 +110,11 @@ public class ShopService {
         return shopRepository.findAll();
     }
     
-    public void updateShopRating(Long shopId, Double newRating) {
+  public void updateShopRating(Long shopId, Double newRating) {
         Shop shop = findById(shopId);
-        shop.setRating(newRating);
+        BigDecimal ratingValue = BigDecimal.valueOf(newRating)
+                .setScale(2, RoundingMode.HALF_UP);
+        shop.setRating(ratingValue);
         shopRepository.save(shop);
     }
     

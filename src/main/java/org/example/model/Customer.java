@@ -1,8 +1,9 @@
 package org.example.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class Customer extends User {
     private String postalCode;
     
     @Column(name = "date_of_birth")
-    private String dateOfBirth;
+    private LocalDate dateOfBirth;
     
     @Column(name = "preferred_payment_method")
     private String preferredPaymentMethod;
@@ -29,7 +30,7 @@ public class Customer extends User {
     private Integer totalOrders = 0;
     
     @Column(name = "total_spent")
-    private Double totalSpent = 0.0;
+    private BigDecimal totalSpent = BigDecimal.ZERO;
     
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> orders = new ArrayList<>();
@@ -68,11 +69,11 @@ public class Customer extends User {
         this.postalCode = postalCode;
     }
     
-    public String getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
     
-    public void setDateOfBirth(String dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
     
@@ -92,11 +93,11 @@ public class Customer extends User {
         this.totalOrders = totalOrders;
     }
     
-    public Double getTotalSpent() {
+    public BigDecimal getTotalSpent() {
         return totalSpent;
     }
     
-    public void setTotalSpent(Double totalSpent) {
+    public void setTotalSpent(BigDecimal totalSpent) {
         this.totalSpent = totalSpent;
     }
     

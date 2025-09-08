@@ -3,6 +3,7 @@ package org.example.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +31,8 @@ public class Shop extends User {
     @Column(name = "is_approved")
     private Boolean isApproved = false;
     
-    @Column(name = "rating")
-    private Double rating = 0.0;
+    @Column(name = "rating", precision = 3, scale = 2)
+    private BigDecimal rating = BigDecimal.valueOf(0.00);
     
     @Column(name = "total_orders")
     private Integer totalOrders = 0;
@@ -102,12 +103,12 @@ public class Shop extends User {
         this.isApproved = isApproved;
     }
     
-    public Double getRating() {
+    public BigDecimal getRating() {
         return rating;
     }
     
-    public void setRating(Double rating) {
-        this.rating = rating;
+    public void setRating(BigDecimal newRating) {
+        this.rating = newRating;
     }
     
     public Integer getTotalOrders() {

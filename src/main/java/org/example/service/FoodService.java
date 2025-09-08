@@ -95,7 +95,7 @@ public class FoodService {
     
     public void updateFoodRating(Long foodId, Double newRating) {
         Food food = findById(foodId);
-        food.setRating(newRating);
+        food.setRating(BigDecimal.valueOf(newRating));
         foodRepository.save(food);
     }
     

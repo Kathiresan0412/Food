@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,7 +84,7 @@ public class CustomerService {
         return customerRepository.findByCityAndActive(city);
     }
     
-    public List<Customer> getTopCustomersBySpending(Double minAmount) {
+    public List<Customer> getTopCustomersBySpending(BigDecimal minAmount) {
         return customerRepository.findTopCustomersBySpending(minAmount);
     }
     
@@ -94,7 +95,8 @@ public class CustomerService {
     public void updateCustomerStats(Long customerId, Double orderAmount) {
         Customer customer = findById(customerId);
         customer.setTotalOrders(customer.getTotalOrders() + 1);
-        customer.setTotalSpent(customer.getTotalSpent() + orderAmount);
+        BigDecimal updatedTotal = customer.getTotalSpent().add(BigDecimal.valueOf(orderAmount));
+        customer.setTotalSpent(updatedTotal);
         customerRepository.save(customer);
     }
 }

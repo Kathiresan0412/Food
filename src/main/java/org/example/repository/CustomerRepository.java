@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,5 +23,5 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     List<Customer> findByCityAndActive(@Param("city") String city);
     
     @Query("SELECT c FROM Customer c WHERE c.totalSpent >= :minAmount AND c.isActive = true ORDER BY c.totalSpent DESC")
-    List<Customer> findTopCustomersBySpending(@Param("minAmount") Double minAmount);
+    List<Customer> findTopCustomersBySpending(@Param("minAmount") BigDecimal minAmount);
 }
