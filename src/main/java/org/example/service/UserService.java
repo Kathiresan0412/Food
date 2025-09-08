@@ -29,7 +29,8 @@ public class UserService {
             throw new RuntimeException("User with email " + user.getEmail() + " already exists");
         }
         
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        // Store plaintext for development/testing only
+        user.setPassword(user.getPassword());
         User savedUser = userRepository.save(user);
         
         activityLogService.logActivity("USER_CREATED", "User created with email: " + user.getEmail(), savedUser);

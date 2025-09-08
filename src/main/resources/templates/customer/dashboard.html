@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Customer Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <h1>Customer Dashboard</h1>
+    <p th:text="${user != null} ? ${user.name} : 'Customer User'"></p>
+    <p>This is a placeholder dashboard for CUSTOMER role.</p>
+    <p><a th:href="@{/logout}">Logout</a></p>
+    <p><a th:href="@{/}">Home</a></p>
+    <!-- TODO: Replace with real customer dashboard content -->
+</body>
+</html>
+
+

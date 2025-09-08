@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Shop Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <h1>Shop Dashboard</h1>
+    <p th:text="${user != null} ? ${user.name} : 'Shop User'"></p>
+    <p>This is a placeholder dashboard for SHOP role.</p>
+    <p><a th:href="@{/logout}">Logout</a></p>
+    <p><a th:href="@{/}">Home</a></p>
+    <!-- TODO: Replace with real shop dashboard content -->
+    
+    <!--
+      Note: This placeholder ensures successful rendering after login for SHOP users.
+    -->
+</body>
+</html>
+
+
