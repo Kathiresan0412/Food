@@ -9,37 +9,31 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
-// import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    private final UserService userService;
-
-    // ✅ constructor injection avoids circular dependency problems
-    public SecurityConfig(UserService userService) {
-        this.userService = userService;
-    }
+    private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // WARNING: Plaintext passwords for development/testing only
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public UserDetailsService userDetailsService() {
+    public UserDetailsService userDetailsService(UserService userService) {
         return username -> userService.findByEmail(username)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + username));
     }
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService,
-                                                               PasswordEncoder passwordEncoder) {
+        org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder);
@@ -60,7 +54,7 @@ public class SecurityConfig {
                 // Public endpoints
                 .requestMatchers("/", "/login", "/perform_login", "/register", "/register/shop", "/register/customer",
                         "/css/**", "/js/**", "/images/**", "/favicon.ico",
-                        "/error", "/.well-known/**", "/webjars/**").permitAll()
+                        "/error", "/.well-known/**", "/webjars/**", "/debug/**").permitAll()
 
                 // Admin endpoints
                 .requestMatchers("/admin/**").hasRole("ADMIN")
@@ -85,8 +79,11 @@ public class SecurityConfig {
                 .loginProcessingUrl("/perform_login")
                 .successHandler((request, response, authentication) ->
                         response.sendRedirect("/dashboard"))
-                .failureHandler((request, response, exception) ->
-                        response.sendRedirect("/login?error=true"))
+                .failureHandler((request, response, exception) -> {
+                        String attempted = request.getParameter("username");
+                        log.warn("Login failed for {}: {}", attempted, exception.getMessage());
+                        response.sendRedirect("/login?error=true");
+                    })
                 .permitAll()
             )
             .logout(logout -> logout
