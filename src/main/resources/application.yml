@@ -48,11 +48,15 @@ spring:
 
   datasource:
     # Use Railway-provided env vars if they exist, otherwise fallback to local dev
-    url: jdbc:mysql://${MYSQLHOST:localhost}:${MYSQLPORT:3306}/${MYSQLDATABASE:food_ordering_db}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: ${MYSQLUSER:root}
-    password: ${MYSQLPASSWORD:macos2024}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    # url: jdbc:mysql://${MYSQLHOST:localhost}:${MYSQLPORT:3306}/${MYSQLDATABASE:food_ordering_db}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    # username: ${MYSQLUSER:root}
+    # password: ${MYSQLPASSWORD:macos2024}
+    # driver-class-name: com.mysql.cj.jdbc.Driver
 
+    url: jdbc:mysql://root:AnDPjCBkeFgthSpmGVCtHYBUAtUSwJbF@interchange.proxy.rlwy.net:58715/railway
+    username: root
+    password: AnDPjCBkeFgthSpmGVCtHYBUAtUSwJbF
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
