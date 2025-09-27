@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.model.Customer;
 import org.example.repository.CustomerRepository;
+import org.example.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,14 +20,18 @@ public class CustomerService {
     private CustomerRepository customerRepository;
     
     @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
     private PasswordEncoder passwordEncoder;
     
     @Autowired
     private ActivityLogService activityLogService;
     
     public Customer registerCustomer(Customer customer) {
-        if (customerRepository.existsByEmail(customer.getEmail())) {
-            throw new RuntimeException("Customer with email " + customer.getEmail() + " already exists");
+        // Check if email already exists in users table (includes all user types)
+        if (userRepository.existsByEmail(customer.getEmail())) {
+            throw new RuntimeException("A user with this email already exists. Please use a different email address.");
         }
         
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));

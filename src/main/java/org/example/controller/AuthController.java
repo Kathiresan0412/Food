@@ -3,10 +3,12 @@ package org.example.controller;
 import org.example.model.*;
 import org.example.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -27,16 +29,28 @@ public class AuthController {
     
     // Register shop
     @PostMapping("/register/shop")
-    public ResponseEntity<Shop> registerShop(@RequestBody Shop shop) {
-        Shop registeredShop = shopService.registerShop(shop);
-        return ResponseEntity.ok(registeredShop);
+    public ResponseEntity<?> registerShop(@RequestBody Shop shop) {
+        try {
+            Shop registeredShop = shopService.registerShop(shop);
+            return ResponseEntity.ok(registeredShop);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        }
     }
     
     // Register customer
     @PostMapping("/register/customer")
-    public ResponseEntity<Customer> registerCustomer(@RequestBody Customer customer) {
-        Customer registeredCustomer = customerService.registerCustomer(customer);
-        return ResponseEntity.ok(registeredCustomer);
+    public ResponseEntity<?> registerCustomer(@RequestBody Customer customer) {
+        try {
+            Customer registeredCustomer = customerService.registerCustomer(customer);
+            return ResponseEntity.ok(registeredCustomer);
+        } catch (RuntimeException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+        }
     }
     
     // Get current user info

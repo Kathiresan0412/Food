@@ -185,7 +185,7 @@
     <footer class="bg-dark text-light py-4 mt-5">
         <div class="container">
             <div class="text-center">
-                <p>&copy; 2024 FoodOrder System. All rights reserved.</p>
+                <p>&copy; 2025 FoodOrder System. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -220,7 +220,7 @@
                     window.location.href = '/login';
                 } else {
                     const error = await response.json();
-                    alert('Registration failed: ' + (error.message || 'Please try again'));
+                    alert(error.message || 'Registration failed. Please try again.');
                 }
             } catch (error) {
                 alert('Registration failed. Please try again.');
