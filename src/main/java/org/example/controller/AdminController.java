@@ -1,13 +1,13 @@
 package org.example.controller;
 
 import org.example.dto.ActivityLogDTO;
+import org.example.dto.OrderDTO;
 import org.example.dto.ShopDTO;
 import org.example.dto.UserDTO;
 import org.example.model.*;
 import org.example.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +24,11 @@ public class AdminController {
     @Autowired
     private ShopService shopService;
     
+    @Autowired
+    private OrderService orderService;
+    
+    @Autowired
+    private CustomerService customerService;
     
     @Autowired
     private ActivityLogService activityLogService;
@@ -101,6 +106,50 @@ public class AdminController {
         return ResponseEntity.ok(activityLogDTOs);
     }
     
+    // Orders management
+    @GetMapping("/orders")
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
+        List<Order> orders = orderService.getAllOrders();
+        List<OrderDTO> orderDTOs = orders.stream()
+                .map(this::convertToOrderDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(orderDTOs);
+    }
+    
+    @GetMapping("/orders/{orderId}")
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Long orderId) {
+        Order order = orderService.findById(orderId);
+        return ResponseEntity.ok(convertToOrderDTO(order));
+    }
+    
+    @GetMapping("/orders/status/{status}")
+    public ResponseEntity<List<OrderDTO>> getOrdersByStatus(@PathVariable OrderStatus status) {
+        List<Order> orders = orderService.getOrdersByStatus(status);
+        List<OrderDTO> orderDTOs = orders.stream()
+                .map(this::convertToOrderDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(orderDTOs);
+    }
+    
+    // Customers management
+    @GetMapping("/customers")
+    public ResponseEntity<List<UserDTO>> getAllCustomers() {
+        List<User> customers = userService.findByRole(UserRole.CUSTOMER);
+        List<UserDTO> customerDTOs = customers.stream()
+                .map(this::convertToUserDTO)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(customerDTOs);
+    }
+    
+    @GetMapping("/customers/{customerId}")
+    public ResponseEntity<UserDTO> getCustomerById(@PathVariable Long customerId) {
+        User customer = userService.findById(customerId);
+        if (customer.getRole() != UserRole.CUSTOMER) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(convertToUserDTO(customer));
+    }
+    
     // Helper method to convert ActivityLog to ActivityLogDTO
     private ActivityLogDTO convertToDTO(ActivityLog activityLog) {
         ActivityLogDTO dto = new ActivityLogDTO();
@@ -155,6 +204,38 @@ public class AdminController {
         dto.setRole(user.getRole().name());
         dto.setCreatedAt(user.getCreatedAt());
         dto.setUpdatedAt(user.getUpdatedAt());
+        
+        return dto;
+    }
+    
+    // Helper method to convert Order to OrderDTO
+    private OrderDTO convertToOrderDTO(Order order) {
+        OrderDTO dto = new OrderDTO();
+        dto.setId(order.getId());
+        dto.setOrderNumber(order.getOrderNumber());
+        dto.setTotalAmount(order.getTotalAmount());
+        dto.setStatus(order.getStatus());
+        dto.setPaymentStatus(order.getPaymentStatus());
+        dto.setDeliveryAddress(order.getDeliveryAddress());
+        dto.setDeliveryInstructions(order.getDeliveryInstructions());
+        dto.setEstimatedDeliveryTime(order.getEstimatedDeliveryTime());
+        dto.setActualDeliveryTime(order.getActualDeliveryTime());
+        dto.setCreatedAt(order.getCreatedAt());
+        dto.setUpdatedAt(order.getUpdatedAt());
+        
+        // Handle customer information safely
+        if (order.getCustomer() != null) {
+            dto.setCustomerId(order.getCustomer().getId());
+            dto.setCustomerName(order.getCustomer().getName());
+            dto.setCustomerEmail(order.getCustomer().getEmail());
+        }
+        
+        // Handle shop information safely
+        if (order.getShop() != null) {
+            dto.setShopId(order.getShop().getId());
+            dto.setShopName(order.getShop().getShopName());
+            dto.setShopAddress(order.getShop().getAddress());
+        }
         
         return dto;
     }
