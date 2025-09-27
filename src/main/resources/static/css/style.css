@@ -334,12 +334,398 @@ footer {
     background: #0056b3;
 }
 
+/* Toast Notifications */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 350px;
+}
+
+.toast {
+    background: white;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    margin-bottom: 12px;
+    overflow: hidden;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0;
+}
+
+.toast.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast-header {
+    background: transparent;
+    border: none;
+    padding: 12px 16px 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.toast-body {
+    padding: 8px 16px 16px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Toast Types */
+.toast-success {
+    border-left: 4px solid var(--success-color);
+}
+
+.toast-success .toast-header {
+    color: var(--success-color);
+}
+
+.toast-error {
+    border-left: 4px solid var(--danger-color);
+}
+
+.toast-error .toast-header {
+    color: var(--danger-color);
+}
+
+.toast-warning {
+    border-left: 4px solid var(--warning-color);
+}
+
+.toast-warning .toast-header {
+    color: var(--warning-color);
+}
+
+.toast-info {
+    border-left: 4px solid var(--info-color);
+}
+
+.toast-info .toast-header {
+    color: var(--info-color);
+}
+
+/* Toast Icons */
+.toast-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    display: inline-block;
+}
+
+.toast-success .toast-icon::before {
+    content: "✓";
+    color: var(--success-color);
+    font-weight: bold;
+}
+
+.toast-error .toast-icon::before {
+    content: "✕";
+    color: var(--danger-color);
+    font-weight: bold;
+}
+
+.toast-warning .toast-icon::before {
+    content: "⚠";
+    color: var(--warning-color);
+    font-weight: bold;
+}
+
+.toast-info .toast-icon::before {
+    content: "ℹ";
+    color: var(--info-color);
+    font-weight: bold;
+}
+
+/* Toast Close Button */
+.toast .btn-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.toast .btn-close:hover {
+    opacity: 1;
+}
+
+/* Toast Animation */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.toast.slide-in {
+    animation: slideInRight 0.3s ease-out;
+}
+
+.toast.slide-out {
+    animation: slideOutRight 0.3s ease-in;
+}
+
+/* Responsive Toast */
+@media (max-width: 576px) {
+    .toast-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .toast {
+        margin-bottom: 8px;
+    }
+}
+
+/* Rating System */
+.rating-input {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.rating-input i {
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.rating-input i:hover {
+    color: #ffc107 !important;
+}
+
+.rating-display {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.rating-display i {
+    font-size: 0.9rem;
+}
+
+/* Food Cards */
+.food-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid #e9ecef;
+}
+
+.food-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+}
+
+.food-card .card-img-top {
+    transition: transform 0.3s ease;
+}
+
+.food-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+/* Order Status Badges */
+.status-pending {
+    background-color: var(--warning-color) !important;
+    color: var(--dark-color) !important;
+}
+
+.status-confirmed {
+    background-color: var(--info-color) !important;
+    color: white !important;
+}
+
+.status-preparing {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+.status-ready {
+    background-color: var(--success-color) !important;
+    color: white !important;
+}
+
+.status-delivered {
+    background-color: var(--success-color) !important;
+    color: white !important;
+}
+
+.status-cancelled {
+    background-color: var(--danger-color) !important;
+    color: white !important;
+}
+
+/* Payment Status */
+.payment-pending {
+    background-color: var(--warning-color) !important;
+    color: var(--dark-color) !important;
+}
+
+.payment-paid {
+    background-color: var(--success-color) !important;
+    color: white !important;
+}
+
+.payment-failed {
+    background-color: var(--danger-color) !important;
+    color: white !important;
+}
+
+.payment-refunded {
+    background-color: var(--info-color) !important;
+    color: white !important;
+}
+
+/* Restaurant Cards */
+.restaurant-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid #e9ecef;
+}
+
+.restaurant-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+}
+
+/* Search Input */
+.search-input {
+    border-radius: 25px;
+    padding: 10px 20px;
+    border: 2px solid #e9ecef;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Filter Buttons */
+.btn-group .btn {
+    border-radius: 20px;
+    margin: 0 2px;
+}
+
+.btn-group .btn.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* Modal Enhancements */
+.modal-xl {
+    max-width: 90%;
+}
+
+.modal-lg {
+    max-width: 800px;
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Image Placeholders */
+.img-placeholder {
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 2rem;
+}
+
+/* Cart Badge */
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: var(--danger-color);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive Improvements */
+@media (max-width: 768px) {
+    .sidebar {
+        position: static;
+        height: auto;
+        padding: 0;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+    
+    .btn-group .btn {
+        font-size: 0.8rem;
+        padding: 5px 10px;
+    }
+    
+    .modal-xl {
+        max-width: 95%;
+    }
+}
+
+/* Animation for new items */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-in-up {
+    animation: slideInUp 0.5s ease-out;
+}
+
 /* Print Styles */
 @media print {
     .navbar,
     .sidebar,
     .btn,
-    footer {
+    footer,
+    .toast-container {
         display: none !important;
     }
     

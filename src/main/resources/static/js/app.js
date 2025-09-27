@@ -134,43 +134,82 @@ function clearFieldError(field) {
 
 // Show success message
 function showSuccessMessage(message) {
-    showAlert(message, 'success');
+    showToast(message, 'success');
 }
 
 // Show error message
 function showErrorMessage(message) {
-    showAlert(message, 'danger');
+    showToast(message, 'error');
 }
 
 // Show warning message
 function showWarningMessage(message) {
-    showAlert(message, 'warning');
+    showToast(message, 'warning');
 }
 
 // Show info message
 function showInfoMessage(message) {
-    showAlert(message, 'info');
+    showToast(message, 'info');
 }
 
-// Show alert
-function showAlert(message, type) {
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-    alertDiv.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+// Show toast notification
+function showToast(message, type) {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.className = 'toast-container';
+        document.body.appendChild(toastContainer);
+    }
+    
+    // Create toast element
+    const toastId = 'toast-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    const toastDiv = document.createElement('div');
+    toastDiv.className = `toast toast-${type}`;
+    toastDiv.id = toastId;
+    toastDiv.setAttribute('role', 'alert');
+    toastDiv.setAttribute('aria-live', 'assertive');
+    toastDiv.setAttribute('aria-atomic', 'true');
+    
+    // Get type-specific title
+    const titles = {
+        success: 'Success',
+        error: 'Error',
+        warning: 'Warning',
+        info: 'Information'
+    };
+    
+    toastDiv.innerHTML = `
+        <div class="toast-header">
+            <span class="toast-icon"></span>
+            <strong class="me-auto">${titles[type] || 'Notification'}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            ${message}
+        </div>
     `;
     
-    // Insert at the top of the main content
-    const mainContent = document.querySelector('main') || document.body;
-    mainContent.insertBefore(alertDiv, mainContent.firstChild);
+    // Add to container
+    toastContainer.appendChild(toastDiv);
     
-    // Auto-dismiss after 5 seconds
-    setTimeout(() => {
-        if (alertDiv.parentNode) {
-            alertDiv.remove();
+    // Initialize Bootstrap toast
+    const toast = new bootstrap.Toast(toastDiv, {
+        autohide: true,
+        delay: type === 'error' ? 8000 : 5000 // Error messages stay longer
+    });
+    
+    // Show the toast
+    toast.show();
+    
+    // Remove from DOM after hiding
+    toastDiv.addEventListener('hidden.bs.toast', () => {
+        if (toastDiv.parentNode) {
+            toastDiv.remove();
         }
-    }, 5000);
+    });
+    
+    return toast;
 }
 
 // Format currency

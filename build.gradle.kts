@@ -33,6 +33,7 @@ dependencies {
     
     // JSON Processing
     implementation("com.fasterxml.jackson.core:jackson-databind")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5")
     
     // Development Tools
     developmentOnly("org.springframework.boot:spring-boot-devtools")

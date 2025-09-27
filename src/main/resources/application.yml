@@ -48,15 +48,15 @@ spring:
 
   datasource:
     # Use Railway-provided env vars if they exist, otherwise fallback to local dev
-    # url: jdbc:mysql://${MYSQLHOST:localhost}:${MYSQLPORT:3306}/${MYSQLDATABASE:food_ordering_db}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    # username: ${MYSQLUSER:root}
-    # password: ${MYSQLPASSWORD:macos2024}
-    # driver-class-name: com.mysql.cj.jdbc.Driver
-
-    url: jdbc:mysql://root:AnDPjCBkeFgthSpmGVCtHYBUAtUSwJbF@interchange.proxy.rlwy.net:58715/railway
-    username: root
-    password: AnDPjCBkeFgthSpmGVCtHYBUAtUSwJbF
+    url: jdbc:mysql://${MYSQLHOST:localhost}:${MYSQLPORT:3306}/${MYSQLDATABASE:food_ordering_db}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: ${MYSQLUSER:root}
+    password: ${MYSQLPASSWORD:macos2024}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+    # url: jdbc:mysql://root:AnDPjCBkeFgthSpmGVCtHYBUAtUSwJbF@interchange.proxy.rlwy.net:58715/railway
+    # username: root
+    # password: AnDPjCBkeFgthSpmGVCtHYBUAtUSwJbF
+    # driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
@@ -76,6 +76,12 @@ spring:
     cache: false
     prefix: classpath:/templates/
     suffix: .html
+  
+  mvc:
+    servlet:
+      path: /
+    async:
+      request-timeout: 30000
 
   security:
     user:
@@ -85,6 +91,19 @@ spring:
 
 server:
   port: ${PORT:8080}
+  tomcat:
+    max-connections: 8192
+    accept-count: 100
+    threads:
+      max: 200
+      min-spare: 10
+    connection-timeout: 20000
+  http2:
+    enabled: false
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
 
 logging:
   level:

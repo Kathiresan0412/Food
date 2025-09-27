@@ -1,5 +1,6 @@
 package org.example.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "shops")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Shop extends User {
     
     @NotBlank(message = "Shop name is required")

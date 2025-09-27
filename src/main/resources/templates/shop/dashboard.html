@@ -1,22 +1,915 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8" />
-    <title>Shop Dashboard</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Dashboard - Food Ordering System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/style.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Shop Dashboard</h1>
-    <p th:text="${user != null} ? ${user.name} : 'Shop User'"></p>
-    <p>This is a placeholder dashboard for SHOP role.</p>
-    <p><a th:href="@{/logout}">Logout</a></p>
-    <p><a th:href="@{/}">Home</a></p>
-    <!-- TODO: Replace with real shop dashboard content -->
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-utensils me-2"></i>FoodOrder Shop
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user me-1"></i>
+                        <span sec:authentication="name">Shop Owner</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/profile">
+                            <i class="fas fa-user-edit me-2"></i>Profile
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/logout">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 mt-2 d-md-block bg-light sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#dashboard" data-section="dashboard">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#foods" data-section="foods">
+                                <i class="fas fa-hamburger me-2"></i>Food Items
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#orders" data-section="orders">
+                                <i class="fas fa-shopping-cart me-2"></i>Orders
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#analytics" data-section="analytics">
+                                <i class="fas fa-chart-bar me-2"></i>Analytics
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#reviews" data-section="reviews">
+                                <i class="fas fa-star me-2"></i>Reviews
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Shop Dashboard</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="loadDashboardData()">
+                                <i class="fas fa-sync-alt me-1"></i>Refresh
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="content-section">
+                    <!-- Stats Cards -->
+                    <div class="row mb-4">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Orders</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalOrders">-</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Today's Revenue</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="todayRevenue">-</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Food Items</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalFoods">-</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-hamburger fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Average Rating</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="averageRating">-</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-star fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Orders -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Recent Orders</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="recentOrdersTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Order #</th>
+                                                    <th>Customer</th>
+                                                    <th>Items</th>
+                                                    <th>Total</th>
+                                                    <th>Status</th>
+                                                    <th>Time</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Recent orders will be loaded here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Food Items Section -->
+                <div id="foods-section" class="content-section" style="display: none;">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Food Items Management</h1>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <button class="btn btn-primary" onclick="showAddFoodModal()">
+                                <i class="fas fa-plus me-1"></i>Add Food Item
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Food Items Table -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">All Food Items</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="foodsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Name</th>
+                                            <th>Category</th>
+                                            <th>Price</th>
+                                            <th>Rating</th>
+                                            <th>Orders</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Food items will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Section -->
+                <div id="orders-section" class="content-section" style="display: none;">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Order Management</h1>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <div class="btn-group me-2" role="group">
+                                <button type="button" class="btn btn-outline-primary active" data-status="all" onclick="filterOrders('all')">All</button>
+                                <button type="button" class="btn btn-outline-warning" data-status="pending" onclick="filterOrders('pending')">Pending</button>
+                                <button type="button" class="btn btn-outline-info" data-status="confirmed" onclick="filterOrders('confirmed')">Confirmed</button>
+                                <button type="button" class="btn btn-outline-success" data-status="ready" onclick="filterOrders('ready')">Ready</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Orders Table -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Orders</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="ordersTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Order #</th>
+                                            <th>Customer</th>
+                                            <th>Items</th>
+                                            <th>Total</th>
+                                            <th>Status</th>
+                                            <th>Payment</th>
+                                            <th>Order Time</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Orders will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Section -->
+                <div id="analytics-section" class="content-section" style="display: none;">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Analytics & Reports</h1>
+                    </div>
+
+                    <!-- Analytics Cards -->
+                    <div class="row mb-4">
+                        <div class="col-lg-6">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Top Selling Items</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="topSellingItems">
+                                        <!-- Top selling items will be loaded here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Revenue Chart</h6>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="revenueChart" width="400" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reviews Section -->
+                <div id="reviews-section" class="content-section" style="display: none;">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Customer Reviews</h1>
+                    </div>
+
+                    <!-- Reviews -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">All Reviews</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="reviewsList">
+                                <!-- Reviews will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add/Edit Food Modal -->
+    <div class="modal fade" id="foodModal" tabindex="-1" aria-labelledby="foodModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="foodModalLabel">Add Food Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="foodForm">
+                        <input type="hidden" id="foodId" name="id">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="foodName" class="form-label">Food Name *</label>
+                                    <input type="text" class="form-control" id="foodName" name="name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="foodCategory" class="form-label">Category</label>
+                                    <select class="form-select" id="foodCategory" name="category">
+                                        <option value="">Select Category</option>
+                                        <option value="Appetizer">Appetizer</option>
+                                        <option value="Main Course">Main Course</option>
+                                        <option value="Dessert">Dessert</option>
+                                        <option value="Beverage">Beverage</option>
+                                        <option value="Fast Food">Fast Food</option>
+                                        <option value="Healthy">Healthy</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="foodPrice" class="form-label">Price *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="foodPrice" name="price" step="0.01" min="0" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="preparationTime" class="form-label">Preparation Time (minutes)</label>
+                                    <input type="number" class="form-control" id="preparationTime" name="preparationTime" min="1">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="foodDescription" class="form-label">Description</label>
+                            <textarea class="form-control" id="foodDescription" name="description" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="foodImageUrl" class="form-label">Image URL</label>
+                            <input type="url" class="form-control" id="foodImageUrl" name="imageUrl" placeholder="https://example.com/image.jpg">
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="isAvailable" name="isAvailable" checked>
+                                <label class="form-check-label" for="isAvailable">
+                                    Available for ordering
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveFood()">Save Food Item</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderModalLabel">Order Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="orderDetails">
+                        <!-- Order details will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <div id="orderActions">
+                        <!-- Order action buttons will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/app.js"></script>
     
-    <!--
-      Note: This placeholder ensures successful rendering after login for SHOP users.
-    -->
+    <script>
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Hide all sections
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                
+                // Show selected section
+                const sectionId = this.getAttribute('data-section') + '-section';
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.style.display = 'block';
+                }
+                
+                // Load section data
+                loadSectionData(this.getAttribute('data-section'));
+            });
+        });
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                // Load stats
+                const statsResponse = await fetch('/api/shop/dashboard/stats');
+                const stats = await statsResponse.json();
+                
+                document.getElementById('totalOrders').textContent = stats.totalOrders || 0;
+                document.getElementById('todayRevenue').textContent = formatCurrency(stats.todayRevenue || 0);
+                document.getElementById('totalFoods').textContent = stats.totalFoods || 0;
+                document.getElementById('averageRating').textContent = (stats.averageRating || 0).toFixed(1);
+                
+                // Load recent orders
+                loadRecentOrders();
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                showErrorMessage('Failed to load dashboard data');
+            }
+        }
+
+        // Load recent orders
+        async function loadRecentOrders() {
+            try {
+                const response = await fetch('/api/shop/orders/recent');
+                const orders = await response.json();
+                
+                const tbody = document.querySelector('#recentOrdersTable tbody');
+                tbody.innerHTML = '';
+                
+                orders.slice(0, 5).forEach(order => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${order.orderNumber}</td>
+                        <td>${order.customer.name}</td>
+                        <td>${order.orderItems.length} items</td>
+                        <td>${formatCurrency(order.totalAmount)}</td>
+                        <td><span class="badge status-${order.status.toLowerCase()}">${order.status}</span></td>
+                        <td>${formatDate(order.createdAt)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary" onclick="viewOrder(${order.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading recent orders:', error);
+            }
+        }
+
+        // Load section data
+        function loadSectionData(section) {
+            switch(section) {
+                case 'dashboard':
+                    loadDashboardData();
+                    break;
+                case 'foods':
+                    loadFoods();
+                    break;
+                case 'orders':
+                    loadOrders();
+                    break;
+                case 'analytics':
+                    loadAnalytics();
+                    break;
+                case 'reviews':
+                    loadReviews();
+                    break;
+            }
+        }
+
+        // Load foods
+        async function loadFoods() {
+            try {
+                const response = await fetch('/api/shop/foods');
+                const foods = await response.json();
+                
+                const tbody = document.querySelector('#foodsTable tbody');
+                tbody.innerHTML = '';
+                
+                foods.forEach(food => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>
+                            <img src="${food.imageUrl || '/images/placeholder-food.jpg'}" 
+                                 alt="${food.name}" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;">
+                        </td>
+                        <td>${food.name}</td>
+                        <td>${food.category || 'N/A'}</td>
+                        <td>${formatCurrency(food.price)}</td>
+                        <td>
+                            <span class="food-rating">
+                                <i class="fas fa-star"></i> ${food.rating.toFixed(1)}
+                            </span>
+                        </td>
+                        <td>${food.totalOrders || 0}</td>
+                        <td>
+                            <span class="badge ${food.isAvailable ? 'bg-success' : 'bg-danger'}">
+                                ${food.isAvailable ? 'Available' : 'Unavailable'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-primary me-1" onclick="editFood(${food.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteFood(${food.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading foods:', error);
+                showErrorMessage('Failed to load food items');
+            }
+        }
+
+        // Load orders
+        async function loadOrders(status = 'all') {
+            try {
+                const url = status === 'all' ? '/api/shop/orders' : `/api/shop/orders?status=${status}`;
+                const response = await fetch(url);
+                const orders = await response.json();
+                
+                const tbody = document.querySelector('#ordersTable tbody');
+                tbody.innerHTML = '';
+                
+                orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${order.orderNumber}</td>
+                        <td>${order.customer.name}</td>
+                        <td>${order.orderItems.length} items</td>
+                        <td>${formatCurrency(order.totalAmount)}</td>
+                        <td><span class="badge status-${order.status.toLowerCase()}">${order.status}</span></td>
+                        <td><span class="badge payment-${order.paymentStatus.toLowerCase()}">${order.paymentStatus}</span></td>
+                        <td>${formatDate(order.createdAt)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary me-1" onclick="viewOrder(${order.id})">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${getOrderActionButton(order)}
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                showErrorMessage('Failed to load orders');
+            }
+        }
+
+        // Get order action button based on status
+        function getOrderActionButton(order) {
+            switch(order.status) {
+                case 'PENDING':
+                    return `<button class="btn btn-sm btn-success" onclick="updateOrderStatus(${order.id}, 'CONFIRMED')">
+                                <i class="fas fa-check"></i> Confirm
+                            </button>`;
+                case 'CONFIRMED':
+                    return `<button class="btn btn-sm btn-info" onclick="updateOrderStatus(${order.id}, 'PREPARING')">
+                                <i class="fas fa-clock"></i> Start Preparing
+                            </button>`;
+                case 'PREPARING':
+                    return `<button class="btn btn-sm btn-warning" onclick="updateOrderStatus(${order.id}, 'READY')">
+                                <i class="fas fa-check-circle"></i> Mark Ready
+                            </button>`;
+                case 'READY':
+                    return `<button class="btn btn-sm btn-success" onclick="updateOrderStatus(${order.id}, 'DELIVERED')">
+                                <i class="fas fa-truck"></i> Mark Delivered
+                            </button>`;
+                default:
+                    return '';
+            }
+        }
+
+        // Filter orders
+        function filterOrders(status) {
+            // Update button states
+            document.querySelectorAll('[data-status]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-status="${status}"]`).classList.add('active');
+            
+            loadOrders(status);
+        }
+
+        // Show add food modal
+        function showAddFoodModal() {
+            document.getElementById('foodModalLabel').textContent = 'Add Food Item';
+            document.getElementById('foodForm').reset();
+            document.getElementById('foodId').value = '';
+            new bootstrap.Modal(document.getElementById('foodModal')).show();
+        }
+
+        // Edit food
+        async function editFood(foodId) {
+            try {
+                const response = await fetch(`/api/shop/foods/${foodId}`);
+                const food = await response.json();
+                
+                document.getElementById('foodModalLabel').textContent = 'Edit Food Item';
+                document.getElementById('foodId').value = food.id;
+                document.getElementById('foodName').value = food.name;
+                document.getElementById('foodCategory').value = food.category || '';
+                document.getElementById('foodPrice').value = food.price;
+                document.getElementById('foodDescription').value = food.description || '';
+                document.getElementById('foodImageUrl').value = food.imageUrl || '';
+                document.getElementById('preparationTime').value = food.preparationTime || '';
+                document.getElementById('isAvailable').checked = food.isAvailable;
+                
+                new bootstrap.Modal(document.getElementById('foodModal')).show();
+            } catch (error) {
+                console.error('Error loading food:', error);
+                showErrorMessage('Failed to load food details');
+            }
+        }
+
+        // Save food
+        async function saveFood() {
+            try {
+                const form = document.getElementById('foodForm');
+                const formData = new FormData(form);
+                const foodData = Object.fromEntries(formData.entries());
+                
+                // Convert price to number
+                foodData.price = parseFloat(foodData.price);
+                foodData.preparationTime = foodData.preparationTime ? parseInt(foodData.preparationTime) : null;
+                foodData.isAvailable = document.getElementById('isAvailable').checked;
+                
+                const url = foodData.id ? `/api/shop/foods/${foodData.id}` : '/api/shop/foods';
+                const method = foodData.id ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(foodData)
+                });
+                
+                if (response.ok) {
+                    showSuccessMessage(foodData.id ? 'Food item updated successfully!' : 'Food item added successfully!');
+                    bootstrap.Modal.getInstance(document.getElementById('foodModal')).hide();
+                    loadFoods();
+                } else {
+                    const error = await response.json();
+                    showErrorMessage(error.message || 'Failed to save food item');
+                }
+            } catch (error) {
+                console.error('Error saving food:', error);
+                showErrorMessage('Failed to save food item');
+            }
+        }
+
+        // Delete food
+        async function deleteFood(foodId) {
+            if (confirm('Are you sure you want to delete this food item?')) {
+                try {
+                    const response = await fetch(`/api/shop/foods/${foodId}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        showSuccessMessage('Food item deleted successfully!');
+                        loadFoods();
+                    } else {
+                        showErrorMessage('Failed to delete food item');
+                    }
+                } catch (error) {
+                    console.error('Error deleting food:', error);
+                    showErrorMessage('Failed to delete food item');
+                }
+            }
+        }
+
+        // View order
+        async function viewOrder(orderId) {
+            try {
+                const response = await fetch(`/api/shop/orders/${orderId}`);
+                const order = await response.json();
+                
+                document.getElementById('orderDetails').innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Order Information</h6>
+                            <p><strong>Order #:</strong> ${order.orderNumber}</p>
+                            <p><strong>Customer:</strong> ${order.customer.name}</p>
+                            <p><strong>Status:</strong> <span class="badge status-${order.status.toLowerCase()}">${order.status}</span></p>
+                            <p><strong>Payment:</strong> <span class="badge payment-${order.paymentStatus.toLowerCase()}">${order.paymentStatus}</span></p>
+                            <p><strong>Total:</strong> ${formatCurrency(order.totalAmount)}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Delivery Information</h6>
+                            <p><strong>Address:</strong> ${order.deliveryAddress || 'N/A'}</p>
+                            <p><strong>Instructions:</strong> ${order.deliveryInstructions || 'N/A'}</p>
+                            <p><strong>Order Time:</strong> ${formatDate(order.createdAt)}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6>Order Items</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${order.orderItems.map(item => `
+                                    <tr>
+                                        <td>${item.food.name}</td>
+                                        <td>${item.quantity}</td>
+                                        <td>${formatCurrency(item.unitPrice)}</td>
+                                        <td>${formatCurrency(item.totalPrice)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+                
+                // Set action buttons
+                document.getElementById('orderActions').innerHTML = getOrderActionButton(order);
+                
+                new bootstrap.Modal(document.getElementById('orderModal')).show();
+            } catch (error) {
+                console.error('Error loading order:', error);
+                showErrorMessage('Failed to load order details');
+            }
+        }
+
+        // Update order status
+        async function updateOrderStatus(orderId, status) {
+            try {
+                const response = await fetch(`/api/shop/orders/${orderId}/status`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ status })
+                });
+                
+                if (response.ok) {
+                    showSuccessMessage('Order status updated successfully!');
+                    loadOrders();
+                    bootstrap.Modal.getInstance(document.getElementById('orderModal')).hide();
+                } else {
+                    showErrorMessage('Failed to update order status');
+                }
+            } catch (error) {
+                console.error('Error updating order status:', error);
+                showErrorMessage('Failed to update order status');
+            }
+        }
+
+        // Load analytics
+        async function loadAnalytics() {
+            try {
+                const response = await fetch('/api/shop/analytics');
+                const analytics = await response.json();
+                
+                // Load top selling items
+                const topItemsDiv = document.getElementById('topSellingItems');
+                topItemsDiv.innerHTML = analytics.topSellingItems.map((item, index) => `
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <strong>${index + 1}. ${item.name}</strong>
+                            <br>
+                            <small class="text-muted">${item.category}</small>
+                        </div>
+                        <div class="text-end">
+                            <div class="fw-bold">${item.totalOrders} orders</div>
+                            <div class="text-success">${formatCurrency(item.totalRevenue)}</div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Load revenue chart
+                const ctx = document.getElementById('revenueChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: analytics.revenueData.labels,
+                        datasets: [{
+                            label: 'Revenue',
+                            data: analytics.revenueData.values,
+                            borderColor: 'rgb(75, 192, 192)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+                showErrorMessage('Failed to load analytics');
+            }
+        }
+
+        // Load reviews
+        async function loadReviews() {
+            try {
+                const response = await fetch('/api/shop/reviews');
+                const reviews = await response.json();
+                
+                const reviewsDiv = document.getElementById('reviewsList');
+                reviewsDiv.innerHTML = reviews.map(review => `
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="card-title">${review.customer.name}</h6>
+                                    <div class="food-rating mb-2">
+                                        ${Array.from({length: 5}, (_, i) => 
+                                            `<i class="fas fa-star ${i < review.rating ? 'text-warning' : 'text-muted'}"></i>`
+                                        ).join('')}
+                                        <span class="ms-2">${review.rating}/5</span>
+                                    </div>
+                                    <p class="card-text">${review.comment || 'No comment provided'}</p>
+                                </div>
+                                <small class="text-muted">${formatDate(review.createdAt)}</small>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+                showErrorMessage('Failed to load reviews');
+            }
+        }
+
+        // Load dashboard on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+        });
+    </script>
 </body>
 </html>
-
-
