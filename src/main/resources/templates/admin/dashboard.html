@@ -640,8 +640,8 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${order.orderNumber}</td>
-                        <td>${order.customer.name}</td>
-                        <td>${order.shop.shopName}</td>
+                        <td>${order.customerName}</td>
+                        <td>${order.shopName}</td>
                         <td>$${order.totalAmount}</td>
                         <td><span class="badge status-${order.status.toLowerCase()}">${order.status}</span></td>
                         <td><span class="badge payment-${order.paymentStatus.toLowerCase()}">${order.paymentStatus}</span></td>
